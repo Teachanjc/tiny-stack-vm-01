@@ -2,9 +2,9 @@
 
 [![make.fun · tiny-stack-vm-01](https://make.fun/badge/tiny-stack-vm-01-run-20261122.svg)](https://make.fun/bounty/tiny-stack-vm-01-run-20261122?utm_source=github&utm_medium=readme&utm_campaign=tiny-stack-vm-01-run-20261122)
 
-A correct interpreter for make.fun's tiny stack ISA v1, in one file (`main.ts`, Node 22, no dependencies). Runs all 40 programs of a set, writing each answer as `stdout.bin` + `exit.txt`.
+One file (`main.ts`, Node 22, standard library only) that runs make.fun's tiny stack ISA v1. It executes all 40 programs of a set and writes each one's `stdout.bin` and `exit.txt`.
 
-Correct where the house baseline (plain-vm 1.0.0) is not: exact 32-bit `MUL` (`Math.imul`), unsigned `DIVU`/`MODU`/`LTU`, `INT_MIN / -1`, shifts masked to 5 bits, `PUSH8` sign extension, all ten traps with their own exit codes (2–11), and the step (1,000,000) and output (65,536) limits, in ISA.md's check order.
+Where the house baseline (plain-vm 1.0.0) gets it wrong, this one gets it right: `MUL` keeps the exact low 32 bits (`Math.imul`); `DIVU`, `MODU` and `LTU` read their operands unsigned; `INT_MIN / -1` stays `INT_MIN` and `x % -1` is 0; shift counts use only the low 5 bits; `SHR` copies the sign bit while `SHRU` shifts in zeros; `PUSH8` sign-extends its byte; `EXIT` keeps only the low byte. All ten traps end the program with their own exit code (2–11) and keep the output written so far, the step limit (1,000,000) and the output limit (65,536 bytes) included, and every check runs in the order ISA.md states.
 
 ## Run it
 
